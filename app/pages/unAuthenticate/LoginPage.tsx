@@ -8,7 +8,9 @@ const loginFormSchema = z.object({
   username: z.string().min(2, {
     message: 'Username must be at least 2 characters.'
   }),
-  password: z.string()
+  password: z.string().min(8, {
+    message: 'Password must be at least 8 characters.'
+  })
 })
 export default function LoginPage() {
   const form = useForm<z.infer<typeof loginFormSchema>>({
@@ -37,7 +39,7 @@ export default function LoginPage() {
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='username'>Username</FieldLabel>
+                    <FieldLabel htmlFor='username'>Email</FieldLabel>
                     <Input
                       {...field}
                       id='username'
