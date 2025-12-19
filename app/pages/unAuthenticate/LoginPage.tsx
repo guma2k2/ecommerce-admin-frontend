@@ -4,27 +4,17 @@ import { Input } from '~/components/ui/input'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
-const loginFormSchema = z.object({
-  username: z.string().min(2, {
-    message: 'Username must be at least 2 characters.'
-  }),
-  password: z.string().min(8, {
-    message: 'Password must be at least 8 characters.'
-  })
-})
+import { loginFormSchema, type LoginFormSchema } from '~/features/unAuthenticate/validator'
 export default function LoginPage() {
-  const form = useForm<z.infer<typeof loginFormSchema>>({
+  const form = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
     defaultValues: {
-      username: '',
+      email: '',
       password: ''
     }
   })
 
-  // 2. Define a submit handler.
   function onSubmit(values: z.infer<typeof loginFormSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
     console.log(values)
   }
   return (
@@ -35,16 +25,16 @@ export default function LoginPage() {
           <form id='form-rhf-demo' onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
               <Controller
-                name='username'
+                name='email'
                 control={form.control}
                 render={({ field, fieldState }) => (
                   <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='username'>Email</FieldLabel>
+                    <FieldLabel htmlFor='email'>Email</FieldLabel>
                     <Input
                       {...field}
-                      id='username'
+                      id='email'
                       aria-invalid={fieldState.invalid}
-                      placeholder='Max Leiter'
+                      placeholder='Enter Email'
                       autoComplete='off'
                     />
                     {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
