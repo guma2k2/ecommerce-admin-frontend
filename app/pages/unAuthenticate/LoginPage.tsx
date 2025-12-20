@@ -1,10 +1,10 @@
 import { Button } from '~/components/ui/button'
-import { Field, FieldDescription, FieldError, FieldGroup, FieldLabel, FieldSet } from '~/components/ui/field'
-import { Input } from '~/components/ui/input'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Controller, useForm } from 'react-hook-form'
 import { loginFormSchema, type LoginFormSchema } from '~/features/unAuthenticate/validator'
+import { FormInput } from '~/components/Form'
+import { FieldGroup, FieldSet } from '~/components/ui/field'
 export default function LoginPage() {
   const form = useForm<LoginFormSchema>({
     resolver: zodResolver(loginFormSchema),
@@ -13,6 +13,8 @@ export default function LoginPage() {
       password: ''
     }
   })
+
+  const { control } = form
 
   function onSubmit(values: z.infer<typeof loginFormSchema>) {
     console.log(values)
@@ -24,42 +26,12 @@ export default function LoginPage() {
           <div className='text-center text-2xl font-medium'>Login</div>
           <form id='form-rhf-demo' onSubmit={form.handleSubmit(onSubmit)}>
             <FieldGroup>
-              <Controller
-                name='email'
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='email'>Email</FieldLabel>
-                    <Input
-                      {...field}
-                      id='email'
-                      aria-invalid={fieldState.invalid}
-                      placeholder='Enter Email'
-                      autoComplete='off'
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
-              />
-
-              <Controller
+              <FormInput control={control} name='email' label='Email' />
+              <FormInput
+                control={control}
                 name='password'
-                control={form.control}
-                render={({ field, fieldState }) => (
-                  <Field data-invalid={fieldState.invalid}>
-                    <FieldLabel htmlFor='password'>Password</FieldLabel>
-                    <FieldDescription>Must be at least 8 characters long.</FieldDescription>
-                    <Input
-                      type='password'
-                      {...field}
-                      id='password'
-                      aria-invalid={fieldState.invalid}
-                      placeholder='••••••••'
-                      autoComplete='off'
-                    />
-                    {fieldState.invalid && <FieldError errors={[fieldState.error]} />}
-                  </Field>
-                )}
+                label='Password'
+                description='Must be at least 8 characters long.'
               />
             </FieldGroup>
             <Button type='submit' form='form-rhf-demo' className='w-full'>
