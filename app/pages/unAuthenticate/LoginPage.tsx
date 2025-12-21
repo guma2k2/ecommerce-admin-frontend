@@ -33,10 +33,10 @@ export default function LoginPage() {
                 label='Password'
                 description='Must be at least 8 characters long.'
               />
+              <Button type='submit' form='form-rhf-demo' className='w-full'>
+                Login
+              </Button>
             </FieldGroup>
-            <Button type='submit' form='form-rhf-demo' className='w-full'>
-              Login
-            </Button>
           </form>
         </FieldSet>
       </div>
