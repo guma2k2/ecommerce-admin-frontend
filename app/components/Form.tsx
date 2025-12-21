@@ -5,6 +5,7 @@ import { Checkbox } from '~/components/ui/checkbox'
 import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '~/components/ui/field'
 import { Input } from '~/components/ui/input'
 import { Select, SelectTrigger, SelectValue } from '~/components/ui/select'
+import { Textarea } from '~/components/ui/textarea'
 
 type FormControlProps<
   TFieldValues extends FieldValues = FieldValues,
@@ -118,6 +119,6 @@ export const FormCheckbox: FormControlFunc = (props) => {
   )
 }
 
-// export const FormTextarea: FormControlFunc = (props) => {
-//   return <FormBase {...props}>{(field) => <TextArea {...field} />}</FormBase>
-// }
+export const FormTextarea: FormControlFunc = (props) => {
+  return <FormBase {...props}>{(field) => <Textarea {...field} />}</FormBase>
+}
