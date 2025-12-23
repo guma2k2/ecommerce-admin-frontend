@@ -5,7 +5,7 @@ export default [
   layout('layouts/authenticate/AuthenticateLayout.tsx', [
     route('admin', 'layouts/authenticate/admin/AdminLayout.tsx', [
       index('pages/authenticate/admin/DashboardPage.tsx'),
-      route('admin', 'pages/authenticate/admin/ManageProductPage.tsx')
+      route('admin', 'pages/authenticate/admin/manageProduct/ManageProductPage.tsx')
     ])
   ])
 ] satisfies RouteConfig
