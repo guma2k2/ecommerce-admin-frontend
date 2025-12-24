@@ -20,7 +20,7 @@ const items = [
   },
   {
     title: 'Product',
-    url: '#',
+    url: '/admin/manage-product',
     icon: Tag
   },
   {

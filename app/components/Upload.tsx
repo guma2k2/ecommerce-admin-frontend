@@ -31,7 +31,6 @@ export default function Upload({ onChange }: UploadProps) {
         ref={fileInputRef}
         onChange={onFileChange}
         onClick={(event) => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           ;(event.target as any).value = null
         }}
       />
