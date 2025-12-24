@@ -6,8 +6,8 @@ export default function AuthenticateLayout() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <main>
-        <SidebarTrigger />
+      <main className='w-full'>
+        {/* <SidebarTrigger /> */}
         <Outlet />
       </main>
     </SidebarProvider>
