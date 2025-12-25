@@ -72,7 +72,7 @@ function FormBase<
           <Field data-invalid={fieldState.invalid} orientation={horizontal ? 'horizontal' : undefined}>
             {controlFirst ? (
               <>
-                {control}{' '}
+                {control}
                 <FieldContent>
                   {labelElement}
                   {errorElement}
