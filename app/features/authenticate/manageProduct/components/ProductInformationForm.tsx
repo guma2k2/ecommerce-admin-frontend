@@ -6,6 +6,7 @@ import { FormInput } from '~/components/Form'
 import { Field, FieldContent, FieldGroup, FieldLabel } from '~/components/ui/field'
 import { productFormSchema, type ProductFormSchema } from '~/features/authenticate/manageProduct/validator'
 import SortableImage from '~/features/authenticate/manageProduct/components/SortableImage'
+import Upload from '~/components/Upload'
 
 export default function ProductInformationForm() {
   const form = useForm<ProductFormSchema>({
@@ -51,7 +52,10 @@ export default function ProductInformationForm() {
         <FormInput control={control} name='title' label='Title' />
         <FieldContent>
           <FieldLabel>Media</FieldLabel>
-          <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+          <div className='w-40 h-40'>
+            <Upload />
+          </div>
+          {/* <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
             <SortableContext items={medias.map((i) => i.id)} strategy={rectSortingStrategy}>
               {medias.length > 0 && (
                 <>
@@ -75,7 +79,7 @@ export default function ProductInformationForm() {
                 </>
               )}
             </SortableContext>
-          </DndContext>
+          </DndContext> */}
         </FieldContent>
       </FieldGroup>
     </form>
