@@ -15,3 +15,5 @@ export { default as Pagination, Pagination as PaginationComponent } from './Pagi
 export * from './Pagination'
 export { default as Search, Search as SearchComponent } from './Search'
 export * from './Search'
+export { default as MediaSelectModal } from './MediaSelectModal'
+export * from './MediaSelectModal'

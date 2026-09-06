@@ -207,8 +207,14 @@ export default function ProductVariantForm() {
                   <div className='size-10 rounded border overflow-hidden bg-gray-50 dark:bg-zinc-800 shrink-0'>
                     <FileUpload
                       variant='compact'
+                      mediaDialog={true}
                       value={productVariants[index]?.image}
-                      onChange={(url: string) => handleChangeProductImage(index, url)}
+                      onChange={(url: string, mediaId?: string) => {
+                        handleChangeProductImage(index, url)
+                        if (mediaId) {
+                          setValue(`variants.${index}.mediaId`, mediaId)
+                        }
+                      }}
                     />
                   </div>
                   <div className='font-medium text-gray-900 dark:text-gray-100 truncate'>

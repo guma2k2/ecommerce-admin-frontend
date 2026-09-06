@@ -24,7 +24,7 @@ export interface ProductOptionSectionProps {
   options: OptionAxisItem[]
   onAddOption: () => void
   onRemoveOption: (optionIndex: number) => void
-  onUpdateOptionName: (optionIndex: number, name: string) => void
+  onUpdateOptionName: (optionIndex: number, name: string, productOptionId?: number) => void
   onAddValue: (optionIndex: number, valueText: string) => void
   onUpdateValue: (optionIndex: number, valueIndex: number, newValue: string) => void
   onRemoveValue: (optionIndex: number, valueIndex: number) => void
@@ -91,7 +91,9 @@ export default function ProductOptionSection({
                       optIdx={optIdx}
                       option={options[optIdx] || field}
                       disabledOptionNames={otherOptionNames}
-                      onUpdateName={(name) => onUpdateOptionName(optIdx, name)}
+                      onUpdateName={(name, productOptionId) =>
+                        onUpdateOptionName(optIdx, name, productOptionId)
+                      }
                       onAddValue={(val) => onAddValue(optIdx, val)}
                       onUpdateValue={(valIdx, val) => onUpdateValue(optIdx, valIdx, val)}
                       onRemoveValue={(valIdx) => onRemoveValue(optIdx, valIdx)}

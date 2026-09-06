@@ -7,6 +7,8 @@ export interface ProductItem {
   image: string
   created_at: string
   updated_at: string
+  createdAt?: string
+  updatedAt?: string
 }
 
 export interface GetProductsParams {
@@ -22,7 +24,7 @@ export type PaginatedProductsResponse = PageResponse<ProductItem>
 export type { ProductVariant }
 
 // ==========================================
-// Product API Types (from product-api.md)
+// Product API Types (from PRODUCT_API_INTEGRATION_GUIDE.md)
 // ==========================================
 
 // Media
@@ -38,34 +40,21 @@ export interface ProductMediaResponse {
   variantIds?: number[]
 }
 
-// Option & Values (Create)
-export interface ProductOptionValueCreateRequest {
-  value: string
-  position: number
-}
-
-export interface ProductOptionCombinationCreateRequest {
-  productOptionId?: number
-  name?: string
-  position: number
-  values: ProductOptionValueCreateRequest[]
-}
-
-// Option & Values (Update)
-export interface ProductOptionValueUpdateRequest {
+// Option & Values
+export interface ProductOptionValueRequest {
   id?: number | null
   value: string
-  position: number
+  position?: number
 }
 
-export interface ProductOptionCombinationUpdateRequest {
-  productOptionId?: number
+export interface ProductOptionCombinationRequest {
+  id?: number | null
+  productOptionId: number
   name?: string
-  position: number
-  values: ProductOptionValueUpdateRequest[]
+  position?: number
+  values: ProductOptionValueRequest[]
 }
 
-// Option Responses
 export interface ProductOptionValueResponse {
   id: number
   value: string
@@ -73,6 +62,7 @@ export interface ProductOptionValueResponse {
 }
 
 export interface ProductOptionCombinationResponse {
+  id: number
   productOptionId: number
   name: string
   position: number
@@ -81,78 +71,101 @@ export interface ProductOptionCombinationResponse {
 
 // Attributes
 export interface ProductAttributeValueRequest {
+  id?: number | null
   productAttributeId: number
   value: string
 }
 
 export interface ProductAttributeValueResponse {
+  id: number
   productAttributeId: number
   name: string
   value: string
 }
 
 // Variants
-export interface ProductVariantCreateRequest {
-  title?: string
-  sku: string
-  price: number
-  quantity: number
-  mediaId?: string
-  attributes?: ProductAttributeValueRequest[]
-  attributeValues?: ProductAttributeValueRequest[]
+export interface ProductVariantAttributeValueRequest {
+  id?: number | null
+  productAttributeId: number
+  value: string
 }
 
-export interface ProductVariantUpdateRequest {
+export interface ProductVariantAttributeResponse {
+  id?: number
+  productAttributeId: number
+  name: string
+  value: string
+}
+
+export interface ProductVariantRequest {
   id?: number | null
-  title?: string
+  title?: string | null
   sku: string
   price: number
   quantity: number
-  mediaId?: string
-  attributes?: ProductAttributeValueRequest[]
-  attributeValues?: ProductAttributeValueRequest[]
+  mediaId?: string | null
+  attributeValues?: ProductVariantAttributeValueRequest[]
+  attributes?: ProductVariantAttributeValueRequest[]
 }
 
 export interface ProductVariantResponse {
   id: number
   title: string
   productOptionValueIds: number[]
+  attributeValues: ProductVariantAttributeResponse[]
+  attributes?: ProductVariantAttributeResponse[]
   sku: string
   price: number
   quantity: number
-  attributes?: ProductAttributeValueResponse[]
+  mediaId: string | null
+  mediaUrl: string | null
+}
+
+// Brand & Category References
+export interface ProductBrandResponse {
+  id: number
+  name: string
+  description: string | null
+  createdAt?: string | null
+  updatedAt?: string | null
+}
+
+export interface ProductCategoryResponse {
+  id: number
+  name: string
+  description?: string | null
 }
 
 // Product Create Request
 export interface ProductCreateRequest {
   name: string
-  description?: string
   slug: string
-  metaTitle?: string
-  metaKeyword?: string
-  metaDescription?: string
+  description?: string | null
+  metaTitle?: string | null
+  metaKeyword?: string | null
+  metaDescription?: string | null
   categoryId?: number | null
   brandId?: number | null
   medias?: ProductMediaRequest[]
-  options?: ProductOptionCombinationCreateRequest[]
+  options?: ProductOptionCombinationRequest[]
   attributes?: ProductAttributeValueRequest[]
-  variants: ProductVariantCreateRequest[]
+  variants: ProductVariantRequest[]
 }
 
 // Product Update Request
 export interface ProductUpdateRequest {
   name: string
-  description?: string
   slug: string
-  metaTitle?: string
-  metaKeyword?: string
-  metaDescription?: string
+  description?: string | null
+  metaTitle?: string | null
+  metaKeyword?: string | null
+  metaDescription?: string | null
   categoryId?: number | null
   brandId?: number | null
   medias?: ProductMediaRequest[]
-  options?: ProductOptionCombinationUpdateRequest[]
+  options?: ProductOptionCombinationRequest[]
   attributes?: ProductAttributeValueRequest[]
-  variants: ProductVariantUpdateRequest[]
+  variants: ProductVariantRequest[]
 }
 
 // Full Product Response
@@ -164,17 +177,14 @@ export interface ProductResponse {
   metaTitle: string | null
   metaKeyword: string | null
   metaDescription: string | null
-  brand: {
-    id: number
-    name: string
-    description?: string
-    createdAt?: string | null
-    updatedAt?: string | null
-  } | null
+  brand: ProductBrandResponse | null
+  categoryId?: number | null
+  category?: ProductCategoryResponse | null
   medias: ProductMediaResponse[]
   attributes: ProductAttributeValueResponse[]
   options: ProductOptionCombinationResponse[]
   variants: ProductVariantResponse[]
-  createdAt: string | null
-  updatedAt: string | null
+  createdAt: string
+  updatedAt: string
 }
+

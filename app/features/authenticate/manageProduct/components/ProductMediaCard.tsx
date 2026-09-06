@@ -18,7 +18,7 @@ import {
 } from "@dnd-kit/sortable"
 import { ImagePlus, Trash2, FolderOpen, UploadCloud, Star } from "lucide-react"
 import { Button } from "~/core/components/shadcn/button"
-import MediaSelectModal from "./MediaSelectModal"
+import { MediaSelectModal } from "~/shared/components"
 import SortableImage from "./SortableImage"
 import type { ProductFormSchema } from "~/features/authenticate/manageProduct/validator"
 import type { UploadType } from "~/shared/types"
@@ -89,10 +89,10 @@ export default function ProductMediaCard() {
     }
   }
 
-  const handleSelectFromModal = (selectedFiles: { url: string; name: string }[]) => {
+  const handleSelectFromModal = (selectedFiles: { id: string; url: string; name: string }[]) => {
     const current = getValues("medias") || []
     const newEntries = selectedFiles.map((file, i) => ({
-      mediaId: `media-uuid-${Date.now()}-${i}`,
+      mediaId: file.id,
       position: current.length + i,
       url: file.url,
       isChecked: false

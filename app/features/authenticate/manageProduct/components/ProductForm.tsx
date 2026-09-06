@@ -91,7 +91,7 @@ export default function ProductForm({
       metaTitle: initialData.metaTitle || "",
       metaKeyword: initialData.metaKeyword || "",
       metaDescription: initialData.metaDescription || "",
-      categoryId: null,
+      categoryId: initialData.categoryId ?? initialData.category?.id ?? null,
       brandId: initialData.brand?.id || null,
       status: "ACTIVE",
       attributeTemplateId: null,
@@ -103,17 +103,20 @@ export default function ProductForm({
       })),
       attributes: (() => {
         const baseAttrs: ProductAttributeItemForm[] = (initialData.attributes || []).map((a) => ({
+          id: a.id,
           productAttributeId: a.productAttributeId,
           name: a.name || "",
           value: a.value || "",
           applyTo: "base"
         }))
 
-        const variantAttrMap = new Map<number, { productAttributeId: number; name?: string }>()
+        const variantAttrMap = new Map<number, { id?: number; productAttributeId: number; name?: string }>()
         ;(initialData.variants || []).forEach((v) => {
-          ;(v.attributes || []).forEach((a) => {
+          const attrs = v.attributeValues || (v as any).attributes || []
+          attrs.forEach((a: any) => {
             if (!variantAttrMap.has(a.productAttributeId)) {
               variantAttrMap.set(a.productAttributeId, {
+                id: a.id,
                 productAttributeId: a.productAttributeId,
                 name: a.name
               })
@@ -140,6 +143,7 @@ export default function ProductForm({
       simpleQuantity: firstVariant?.quantity || 0,
       simpleSku: firstVariant?.sku || "",
       options: (initialData.options || []).map((opt) => ({
+        id: opt.id,
         productOptionId: opt.productOptionId,
         name: opt.name,
         position: opt.position,
@@ -156,8 +160,11 @@ export default function ProductForm({
         sku: v.sku,
         price: v.price,
         quantity: v.quantity,
+        mediaId: v.mediaId || undefined,
+        image: v.mediaUrl || initialData.medias?.find((m) => m.mediaId === v.mediaId)?.url || "",
         productOptionValueIds: v.productOptionValueIds,
-        attributes: (v.attributes || []).map((a) => ({
+        attributes: (v.attributeValues || (v as any).attributes || []).map((a: any) => ({
+          id: a.id,
           productAttributeId: a.productAttributeId,
           name: a.name || "",
           value: a.value || "",
@@ -184,15 +191,14 @@ export default function ProductForm({
         ? values.options
             .filter((opt) => opt.name.trim() && opt.values.some((v) => v.value.trim()))
             .map((opt, optIndex) => ({
-              productOptionId: opt.productOptionId,
-              name: opt.name,
+              ...(mode === "edit" && typeof opt.id === "number" ? { id: opt.id } : {}),
+              productOptionId: opt.productOptionId || optIndex + 1,
               position: optIndex,
               values: opt.values
                 .filter((v) => v.value.trim())
-                .map((v, valIndex) => ({
-                  id: mode === "edit" ? v.id || null : undefined,
-                  value: v.value.trim(),
-                  position: valIndex
+                .map((v) => ({
+                  ...(mode === "edit" && typeof v.id === "number" ? { id: v.id } : {}),
+                  value: v.value.trim()
                 }))
             }))
         : []
@@ -202,18 +208,18 @@ export default function ProductForm({
         const variantAttrs = (v.attributes || [])
           .filter((a) => a.value?.trim())
           .map((a) => ({
+            ...(mode === "edit" && typeof a.id === "number" ? { id: a.id } : {}),
             productAttributeId: Number(a.productAttributeId),
             value: a.value.trim()
           }))
 
         return {
-          id: mode === "edit" ? v.id || null : undefined,
-          title: v.title || `Variant ${idx + 1}`,
+          ...(mode === "edit" && typeof v.id === "number" ? { id: v.id } : {}),
+          title: v.title?.trim() || "Default",
           sku: (v.sku || "").trim() || `${values.slug.toUpperCase()}-${idx + 1}`,
           price: Number(v.price) || 0,
           quantity: Number(v.quantity) || 0,
-          mediaId: v.mediaId,
-          attributes: variantAttrs,
+          mediaId: v.mediaId || null,
           attributeValues: variantAttrs
         }
       })
@@ -228,6 +234,7 @@ export default function ProductForm({
       const attributesPayload = values.attributes
         .filter((a) => a.applyTo !== "variant" && a.value?.trim())
         .map((a) => ({
+          ...(mode === "edit" && typeof a.id === "number" ? { id: a.id } : {}),
           productAttributeId: Number(a.productAttributeId),
           value: a.value.trim()
         }))
@@ -236,15 +243,15 @@ export default function ProductForm({
         const createPayload: ProductCreateRequest = {
           name: values.name.trim(),
           slug: values.slug.trim(),
-          description: values.description || undefined,
-          metaTitle: values.metaTitle || undefined,
-          metaKeyword: values.metaKeyword || undefined,
-          metaDescription: values.metaDescription || undefined,
+          description: values.description?.trim() || null,
+          metaTitle: values.metaTitle?.trim() || null,
+          metaKeyword: values.metaKeyword?.trim() || null,
+          metaDescription: values.metaDescription?.trim() || null,
           categoryId: values.categoryId ? Number(values.categoryId) : null,
           brandId: values.brandId ? Number(values.brandId) : null,
-          medias: mediasPayload.length ? mediasPayload : undefined,
-          options: optionsPayload.length ? optionsPayload : undefined,
-          attributes: attributesPayload.length ? attributesPayload : undefined,
+          medias: mediasPayload,
+          options: optionsPayload,
+          attributes: attributesPayload,
           variants: variantsPayload
         }
 
@@ -255,15 +262,15 @@ export default function ProductForm({
         const updatePayload: ProductUpdateRequest = {
           name: values.name.trim(),
           slug: values.slug.trim(),
-          description: values.description || undefined,
-          metaTitle: values.metaTitle || undefined,
-          metaKeyword: values.metaKeyword || undefined,
-          metaDescription: values.metaDescription || undefined,
+          description: values.description?.trim() || null,
+          metaTitle: values.metaTitle?.trim() || null,
+          metaKeyword: values.metaKeyword?.trim() || null,
+          metaDescription: values.metaDescription?.trim() || null,
           categoryId: values.categoryId ? Number(values.categoryId) : null,
           brandId: values.brandId ? Number(values.brandId) : null,
-          medias: mediasPayload.length ? mediasPayload : undefined,
-          options: optionsPayload.length ? optionsPayload : undefined,
-          attributes: attributesPayload.length ? attributesPayload : undefined,
+          medias: mediasPayload,
+          options: optionsPayload,
+          attributes: attributesPayload,
           variants: variantsPayload
         }
 

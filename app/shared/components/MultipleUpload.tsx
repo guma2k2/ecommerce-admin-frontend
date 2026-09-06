@@ -14,7 +14,7 @@ import { Button } from "~/core/components/shadcn/button"
 import { FieldLabel } from "~/core/components/shadcn/field"
 import { Input } from "~/core/components/shadcn/input"
 import SortableImage from "~/features/authenticate/manageProduct/components/SortableImage"
-import MediaSelectModal from "~/features/authenticate/manageProduct/components/MediaSelectModal"
+import MediaSelectModal from "./MediaSelectModal"
 import type { UploadType } from "~/shared/types"
 
 type UploadProps = {
