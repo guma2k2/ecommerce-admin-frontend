@@ -277,7 +277,12 @@ export default function ProductVariantsMatrixTable({
                     isExpanded={isExpanded}
                     onToggleExpand={() => toggleExpand(index)}
                     onSelect={(checked) => onSelectVariant(index, checked)}
-                    onImageChange={(url) => onUpdateVariantField(index, "image", url)}
+                    onImageChange={(url, mediaId) => {
+                      onUpdateVariantField(index, "image", url)
+                      if (mediaId !== undefined) {
+                        onUpdateVariantField(index, "mediaId", mediaId)
+                      }
+                    }}
                     onSkuChange={(sku) => onUpdateVariantField(index, "sku", sku)}
                     onPriceChange={(price) => onUpdateVariantField(index, "price", price)}
                     onQuantityChange={(qty) => onUpdateVariantField(index, "quantity", qty)}

@@ -14,7 +14,7 @@ export interface VariantRowItem {
   price: number
   quantity: number
   image?: string
-  mediaId?: string
+  mediaId?: string | null
   attributes?: {
     productAttributeId: number
     name?: string
@@ -30,7 +30,7 @@ export interface ProductVariantRowProps {
   isExpanded?: boolean
   onToggleExpand?: () => void
   onSelect: (checked: boolean) => void
-  onImageChange: (url: string) => void
+  onImageChange: (url: string, mediaId?: string) => void
   onSkuChange: (sku: string) => void
   onPriceChange: (price: number) => void
   onQuantityChange: (quantity: number) => void
@@ -75,6 +75,7 @@ export default function ProductVariantRow({
         <div className="w-10 h-10 rounded-lg border overflow-hidden bg-gray-50 dark:bg-zinc-800 shrink-0">
           <FileUpload
             variant="compact"
+            mediaDialog={true}
             value={variant.image || ""}
             onChange={onImageChange}
           />

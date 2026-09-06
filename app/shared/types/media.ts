@@ -13,6 +13,8 @@ export interface MediaResponse {
   fileType: string
   active: boolean
   duration?: string | null
+  createdAt?: string
+  updatedAt?: string
   created_at?: string
   updated_at?: string
 }

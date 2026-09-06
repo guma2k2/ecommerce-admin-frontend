@@ -29,14 +29,15 @@ import SortableOptionValueItem from "./SortableOptionValueItem"
 export interface OptionValueItem {
   id?: number | null
   value: string
-  position: number
+  position?: number
   _key?: string
 }
 
 export interface OptionAxisItem {
+  id?: number | string | null
   productOptionId?: number
   name: string
-  position: number
+  position?: number
   showing?: boolean
   values: OptionValueItem[]
 }
@@ -45,7 +46,7 @@ export interface SortableOptionAxisCardProps {
   fieldId: string
   optIdx: number
   option: OptionAxisItem
-  onUpdateName: (name: string) => void
+  onUpdateName: (name: string, productOptionId?: number) => void
   onAddValue: (value: string) => void
   onUpdateValue: (valIdx: number, value: string) => void
   onRemoveValue: (valIdx: number) => void
@@ -261,7 +262,9 @@ function SortableOptionAxisCardComponent({
             <InfiniteSelect<ProductOptionResponse>
               fetchData={getOptionsPage}
               value={option.name || ""}
-              onChange={(val) => onUpdateName(val)}
+              onChange={(val, item) =>
+                onUpdateName(val, item?.id ? Number(item.id) : undefined)
+              }
               getOptionValue={(item) => item.name}
               getOptionLabel={(item) => item.name}
               disabledOptionIds={disabledOptionNames}

@@ -19,27 +19,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "~/core/components/shadcn/dropdown-menu"
+import { formatDateTime } from "~/shared/utils/appUtils"
 
 interface ProductTableProps {
   products: ProductItem[]
   isLoading?: boolean
   onEdit?: (product: ProductItem) => void
   onDelete?: (product: ProductItem) => void
-}
-
-function formatDate(dateString: string): string {
-  try {
-    const date = new Date(dateString)
-    return new Intl.DateTimeFormat("en-US", {
-      year: "numeric",
-      month: "short",
-      day: "2-digit",
-      hour: "2-digit",
-      minute: "2-digit",
-    }).format(date)
-  } catch {
-    return dateString
-  }
 }
 
 export default function ProductTable({
@@ -146,10 +132,10 @@ export default function ProductTable({
                 {product.name}
               </TableCell>
               <TableCell className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                {formatDate(product.created_at)}
+                {formatDateTime(product.createdAt || product.created_at)}
               </TableCell>
               <TableCell className="text-xs text-gray-500 dark:text-gray-400 whitespace-nowrap">
-                {formatDate(product.updated_at)}
+                {formatDateTime(product.updatedAt || product.updated_at)}
               </TableCell>
               <TableCell className="text-right">
                 <DropdownMenu>

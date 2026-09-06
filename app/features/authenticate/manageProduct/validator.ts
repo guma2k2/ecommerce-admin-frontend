@@ -3,20 +3,21 @@ import z from 'zod'
 export const productOptionValueSchema = z.object({
   id: z.number().nullable().optional(),
   value: z.string().trim().min(1, 'Option value is required'),
-  position: z.number(),
+  position: z.number().optional(),
   image: z.string().optional()
 })
 
 export const productOptionSchema = z.object({
-  id: z.string().optional(),
+  id: z.union([z.number(), z.string()]).nullable().optional(),
   productOptionId: z.number().optional(),
   name: z.string().trim().min(1, 'Option name is required'),
-  position: z.number(),
-  showing: z.boolean(),
+  position: z.number().optional(),
+  showing: z.boolean().optional(),
   values: z.array(productOptionValueSchema)
 })
 
 export const productAttributeItemSchema = z.object({
+  id: z.number().nullable().optional(),
   productAttributeId: z.number(),
   name: z.string().optional(),
   value: z.string(),
@@ -28,9 +29,9 @@ export const productVariantSchema = z.object({
   title: z.string().optional(),
   name: z.string().optional(),
   sku: z.string().optional(),
-  price: z.number(),
-  quantity: z.number(),
-  mediaId: z.string().optional(),
+  price: z.number().min(0, 'Price must be greater than or equal to 0'),
+  quantity: z.number().min(0, 'Quantity must be greater than or equal to 0'),
+  mediaId: z.string().nullable().optional(),
   image: z.string().optional(),
   productOptionValueIds: z.array(z.number()).optional(),
   attributes: z.array(productAttributeItemSchema).optional()
@@ -45,7 +46,7 @@ export const productMediaItemSchema = z.object({
 
 export const productVariantFormSchema = z.object({
   options: z.array(productOptionSchema),
-  variants: z.array(productVariantSchema)
+  variants: z.array(productVariantSchema).min(1, 'At least 1 variant is required')
 })
 
 export const productFormSchema = z.object({
@@ -63,11 +64,11 @@ export const productFormSchema = z.object({
   medias: z.array(productMediaItemSchema),
   attributes: z.array(productAttributeItemSchema),
   hasOptions: z.boolean(),
-  simplePrice: z.number(),
-  simpleQuantity: z.number(),
+  simplePrice: z.number().min(0, 'Price must be greater than or equal to 0'),
+  simpleQuantity: z.number().min(0, 'Quantity must be greater than or equal to 0'),
   simpleSku: z.string().optional(),
   options: z.array(productOptionSchema),
-  variants: z.array(productVariantSchema)
+  variants: z.array(productVariantSchema).min(1, 'At least 1 variant is required')
 })
 
 export type ProductOptionValueFormType = z.infer<typeof productOptionValueSchema>
@@ -77,3 +78,4 @@ export type ProductMediaItemForm = z.infer<typeof productMediaItemSchema>
 export type ProductAttributeItemForm = z.infer<typeof productAttributeItemSchema>
 export type ProductVariantFormSchema = z.infer<typeof productVariantFormSchema>
 export type ProductFormSchema = z.infer<typeof productFormSchema>
+

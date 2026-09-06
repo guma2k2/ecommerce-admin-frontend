@@ -153,8 +153,15 @@ export default function ProductVariantCard() {
     removeOption(optionIndex)
   }
 
-  const handleUpdateOptionName = (optionIndex: number, name: string) => {
+  const handleUpdateOptionName = (
+    optionIndex: number,
+    name: string,
+    productOptionId?: number
+  ) => {
     setValue(`options.${optionIndex}.name`, name, { shouldDirty: true })
+    if (productOptionId !== undefined) {
+      setValue(`options.${optionIndex}.productOptionId`, productOptionId, { shouldDirty: true })
+    }
   }
 
   const handleAddValue = (optionIndex: number, valueText: string) => {

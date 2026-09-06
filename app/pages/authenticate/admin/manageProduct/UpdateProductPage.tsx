@@ -8,7 +8,11 @@ import { showToast } from "~/shared/utils/toast"
 import type { ProductCreateRequest, ProductUpdateRequest } from "~/shared/types"
 
 export async function clientLoader({ params }: LoaderFunctionArgs) {
-  const productId = params.id || "1"
+  const productId = params.id
+  if (!productId) {
+    throw new Response("Product ID is required", { status: 400 })
+  }
+
   const [product, categories, brands] = await Promise.all([
     getProductById(productId),
     getAllCategories().catch(() => []),
@@ -27,7 +31,7 @@ export default function UpdateProductPage() {
   const handleUpdate = async (values: ProductCreateRequest | ProductUpdateRequest) => {
     try {
       setIsSubmitting(true)
-      const targetId = product?.id || productId || 1
+      const targetId = product?.id || productId
       await updateProduct(targetId, values as ProductUpdateRequest)
       showToast("success", "toasts.updatedSuccess")
       navigate("/admin/manage-product")

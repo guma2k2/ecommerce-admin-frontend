@@ -12,7 +12,7 @@ import { useTranslation } from "react-i18next"
 
 import { Button } from "~/core/components/shadcn/button"
 import { Spinner } from "~/core/components/shadcn/spinner"
-import MediaSelectModal from "~/features/authenticate/manageProduct/components/MediaSelectModal"
+import MediaSelectModal from "./MediaSelectModal"
 import { uploadMedia } from "~/shared/services/api/mediaService"
 import { showToast } from "~/shared/utils/toast"
 import { cn } from "~/shared/utils/appUtils"
@@ -22,7 +22,7 @@ export type FileUploadVariant = "dropzone" | "compact" | "avatar"
 export interface FileUploadProps {
   value?: string
   defaultValue?: string
-  onChange?: (url: string) => void
+  onChange?: (url: string, mediaId?: string) => void
   onRemove?: () => void
   disabled?: boolean
   isMultiple?: boolean
@@ -115,7 +115,7 @@ export default function FileUpload({
       const newItem = await uploadMedia(file)
       
       setInternalUrl(newItem.url)
-      onChange?.(newItem.url)
+      onChange?.(newItem.url, newItem.id)
       showToast("success", "toasts.uploadSuccess")
     } catch (err) {
       console.error("FileUpload error:", err)
@@ -157,12 +157,22 @@ export default function FileUpload({
     }
   }
 
-  const handleModalSelectMedia = (selectedMedias: { url: string; name: string }[]) => {
+  const handleModalSelectMedia = (selectedMedias: { id: string; url: string; name: string }[]) => {
     if (selectedMedias.length > 0) {
-      const selectedUrl = selectedMedias[0].url
-      setInternalUrl(selectedUrl)
+      const selectedItem = selectedMedias[0]
+      setInternalUrl(selectedItem.url)
       setImagePreviewFailed(false)
-      onChange?.(selectedUrl)
+      onChange?.(selectedItem.url, selectedItem.id)
+    }
+  }
+
+  const handleClickTrigger = (e?: React.MouseEvent) => {
+    e?.stopPropagation()
+    if (disabled || isUploading) return
+    if (isMediaDialogEnabled) {
+      setIsMediaModalOpen(true)
+    } else {
+      handleOpenFilePicker()
     }
   }
 
@@ -170,7 +180,7 @@ export default function FileUpload({
     e?.stopPropagation()
     setInternalUrl("")
     setImagePreviewFailed(false)
-    onChange?.("")
+    onChange?.("", undefined)
     onRemove?.()
     if (fileInputRef.current) {
       fileInputRef.current.value = ""
@@ -190,7 +200,7 @@ export default function FileUpload({
             disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer",
             className
           )}
-          onClick={handleOpenFilePicker}
+          onClick={handleClickTrigger}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -221,7 +231,7 @@ export default function FileUpload({
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 p-1">
                   <button
                     type="button"
-                    onClick={handleOpenFilePicker}
+                    onClick={handleClickTrigger}
                     className="p-1 rounded-full bg-white/20 hover:bg-white/40 text-white transition-colors"
                     title={t("upload.changeImage", "Change Image")}
                   >
@@ -251,6 +261,7 @@ export default function FileUpload({
             onOpenChange={setIsMediaModalOpen}
             onSelectMedia={handleModalSelectMedia}
             initialSelectedUrls={internalUrl ? [internalUrl] : []}
+            multiple={isMultiple}
           />
         )}
       </>
@@ -270,7 +281,7 @@ export default function FileUpload({
             disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer",
             className
           )}
-          onClick={handleOpenFilePicker}
+          onClick={handleClickTrigger}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
@@ -301,7 +312,7 @@ export default function FileUpload({
                 <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-2">
                   <button
                     type="button"
-                    onClick={handleOpenFilePicker}
+                    onClick={handleClickTrigger}
                     className="p-1.5 rounded-full bg-white/20 hover:bg-white/40 text-white"
                     title={t("upload.changeImage", "Change Image")}
                   >
@@ -331,6 +342,7 @@ export default function FileUpload({
             onOpenChange={setIsMediaModalOpen}
             onSelectMedia={handleModalSelectMedia}
             initialSelectedUrls={internalUrl ? [internalUrl] : []}
+            multiple={isMultiple}
           />
         )}
       </>
@@ -512,6 +524,7 @@ export default function FileUpload({
           onOpenChange={setIsMediaModalOpen}
           onSelectMedia={handleModalSelectMedia}
           initialSelectedUrls={internalUrl ? [internalUrl] : []}
+          multiple={isMultiple}
         />
       )}
     </div>
